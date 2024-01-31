@@ -1,15 +1,17 @@
 public class NumberConverter {
-    int[] digits;
+    String[] valueTable = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i",
+            "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "+", "/"};
+    String[] digits;
     int base;
 
 
-    public NumberConverter(int number, int base) {
-        String numberAsString = Integer.toString(number);
-        digits = new int[numberAsString.length()];
-        for (int i = 0; i < numberAsString.length(); i++) {
-            String single = numberAsString.substring(i, i + 1);
-            int d = Integer.parseInt(single);
-            digits[i] = d;
+    public NumberConverter(String number, int base) {
+        digits = new String[number.length()];
+
+        for (int i = 0; i < number.length(); i++) {
+            String single = number.substring(i, i + 1);
+            digits[i] = single;
         }
         this.base = base;
     }
@@ -26,7 +28,7 @@ public class NumberConverter {
     }
 
 
-    public int[] getDigits() {
+    public String[] getDigits() {
         return digits;
     }
 
@@ -34,7 +36,7 @@ public class NumberConverter {
     public int[] convertToDecimal() {
         int[] decimalNumbers = new int[digits.length];
         for (int index = 0; index < digits.length; index++) {
-            int d = (int) (digits[index] * Math.pow(base, (digits.length - index - 1)));
+            int d = (int) (findIndex(valueTable, digits[index]) * Math.pow(base, (digits.length - index - 1)));
             decimalNumbers[index] = d;
         }
 
@@ -56,7 +58,7 @@ public class NumberConverter {
     public int[] convertToBinary() {
         int decimalNumber = getDecimalNumber();
         int exponent = 0;
-        while (decimalNumber > Math.pow(2, exponent)) {
+        while (decimalNumber >= Math.pow(2, exponent)) {
             exponent++;
         }
 
@@ -90,7 +92,7 @@ public class NumberConverter {
     public int[] convertToOctal() {
         int decimalNumber = getDecimalNumber();
         int exponent = 0;
-        while (decimalNumber > Math.pow(8, exponent)) {
+        while (decimalNumber >= Math.pow(8, exponent)) {
             exponent++;
         }
 
@@ -122,20 +124,19 @@ public class NumberConverter {
     public String[] convertToHexadecimal() {
         int decimalNumber = getDecimalNumber();
         int exponent = 0;
-        while (decimalNumber > Math.pow(16, exponent)) {
+        while (decimalNumber >= Math.pow(16, exponent)) {
             exponent++;
         }
 
 
         String[] hexadeciamlNumbers = new String[exponent];
-        String[] hexaDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         for (int index = 0; index < hexadeciamlNumbers.length; index++) {
             int digitCount = 0;
             while (decimalNumber >= Math.pow(16, exponent - index - 1)) {
                 decimalNumber -= Math.pow(16, exponent - index - 1);
                 digitCount++;
             }
-            hexadeciamlNumbers[index] = hexaDigits[digitCount];
+            hexadeciamlNumbers[index] = valueTable[digitCount];
         }
 
         return hexadeciamlNumbers;
@@ -155,22 +156,19 @@ public class NumberConverter {
 
     public String[] convertToAnyBase(int decimalNumber, int base) {
         int exponent = 0;
-        while (decimalNumber > Math.pow(base, exponent)) {
+        while (decimalNumber >= Math.pow(base, exponent)) {
             exponent++;
         }
 
 
         String[] baseNumbers = new String[exponent];
-        String[] digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I",
-                "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i",
-                "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "+", "/"};
         for (int index = 0; index < baseNumbers.length; index++) {
             int digitCount = 0;
             while (decimalNumber >= Math.pow(base, exponent - index - 1)) {
                 decimalNumber -= Math.pow(base, exponent - index - 1);
                 digitCount++;
             }
-            baseNumbers[index] = digits[digitCount];
+            baseNumbers[index] = valueTable[digitCount];
         }
 
         return baseNumbers;
@@ -186,5 +184,17 @@ public class NumberConverter {
         o = o + "\n";
 
         return o;
+    }
+
+
+    public static int findIndex(String arr[], String t)
+    {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].equals(t)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
